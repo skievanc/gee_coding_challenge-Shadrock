@@ -1,7 +1,10 @@
+// Get the image
 var col = ee.ImageCollection('MODIS/006/MOD13A2').select('NDVI');
 
+// Mask to Zambia
 var mask = ee.FeatureCollection('USDOS/LSIB_SIMPLE/2017').filter(ee.Filter.eq('country_na','Zambia'));
 
+// Coordinates of area to display in gif
 var region = ee.Geometry.Polygon(
   [[[34.0170361654,-18.3977975531],
   [21.8222119467,-18.3977975531],
@@ -9,6 +12,7 @@ var region = ee.Geometry.Polygon(
   [34.0170361654,-8.0173516923]]],
   null, false);
   
+//    
 col = col.map(function(img){
   var doy = ee.Date(img.get('system:time_start')).getRelative('day','year');
   return img.set('doy',doy);
@@ -28,12 +32,15 @@ var comp = joinCol.map(function(img){
   return doyCol.reduce(ee.Reducer.median());
 });
 
+// Params for visualization
 var visParams = {"min":0,"max":9000,"palette":["FFFFFF","CE7E45","DF923D","F1B555","FCD163","66A000","529400","3E8601","207401","056201","012E01","011D01","011301"]};
 
+// Creating visualization variable
 var rgbVis = comp.map(function(img){
   return img.visualize(visParams).clip(mask);
 });
 
+// gif specific params
 var gifParams = {
   'region': region,
   'dimensions': 600,
@@ -41,6 +48,7 @@ var gifParams = {
   'framesPerSecond': 10,
 };
 
+// Print gif link
 print(rgbVis.getVideoThumbURL(gifParams));
 
 
