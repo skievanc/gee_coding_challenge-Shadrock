@@ -1,3 +1,8 @@
+// Evan Collins
+// Created 4/23/21
+// Generate a GIF of NDVI change in Zambia. 
+// Based on a GEE tutoria for creating an NDVI timeseries animation. 
+
 // Get the image
 var col = ee.ImageCollection('MODIS/006/MOD13A2').select('NDVI');
 
